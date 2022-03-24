@@ -24,7 +24,7 @@ function TodoForm({ todo, deleteTodo, updateTodo }) {
         <form onSubmit={handleSubmit}>
           <input
             disabled={!editForm}
-            className='border-2 border-yellow-400 outline-none disabled:bg-red-500 '
+            className='border-2 border-yellow-400 outline-none disabled:bg-green-100 bg-green-300 '
             value={currentTodo}
             onChange={(e) => onChange(e)}
           />
