@@ -6,8 +6,7 @@ function TodoForm({ todo, deleteTodo, updateTodo }) {
   const [currentTodo, setCurrentTodo] = useState(todo);
   // const originalTodo = useRef('');
 
-  const onChange = (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
     setCurrentTodo(e.target.value);
   };
 
@@ -18,41 +17,44 @@ function TodoForm({ todo, deleteTodo, updateTodo }) {
     console.log('submit');
   };
 
+  useEffect(() => {
+    setCurrentTodo(todo)
+  }, [todo]);
+
   return (
     <>
       <li>
-        <form onSubmit={handleSubmit}>
+        <form className='flex justify-center my-1 ' onSubmit={handleSubmit}>
           <input
             disabled={!editForm}
-            className='border-2 border-yellow-400 outline-none disabled:bg-green-100 bg-green-300 '
+            className='border border-yellow-400 outline-none disabled:bg-blue-300 bg-blue-500 rounded-md'
             value={currentTodo}
-            onChange={(e) => onChange(e)}
+            onChange={handleChange}
           />
-          <span>
-            <button
-              disabled={editForm}
-              type='button'
-              className='p-2 mx-1 bg-red-600 rounded-lg disabled:bg-slate-500'
-              onClick={() => deleteTodo(todo)}
-            >
-              Delete todo
-            </button>
-            <button
-              disabled={editForm}
-              type='button'
-              className='p-2 mx-1 bg-green-600 rounded-lg disabled:bg-slate-500'
-              onClick={() => setEditForm(!editForm)}
-            >
-              Update
-            </button>
-            <button
-              disabled={!editForm}
-              className='p-2 bg-green-600 disabled:bg-slate-500 rounded-lg'
-              type='submit'
-            >
-              Save
-            </button>
-          </span>
+
+          <button
+            disabled={editForm}
+            type='button'
+            className='p-1 text-md mx-1 bg-red-500 rounded-lg disabled:bg-slate-500'
+            onClick={() => deleteTodo(todo)}
+          >
+            Delete
+          </button>
+          <button
+            disabled={editForm}
+            type='button'
+            className='p-1 text-md bg-green-600 rounded-lg disabled:bg-slate-500'
+            onClick={() => setEditForm(!editForm)}
+          >
+            Update
+          </button>
+          <button
+            disabled={!editForm}
+            className='p-1 ml-1 text-md bg-green-600 disabled:bg-slate-500 rounded-lg'
+            type='submit'
+          >
+            Save
+          </button>
         </form>
       </li>
     </>
