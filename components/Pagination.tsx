@@ -1,8 +1,12 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
+import { NextPage } from 'next';
 
-function Pagination({ totalPage }: { totalPage: Number[] | undefined }) {
-  const [page, setPage] = useState(totalPage);
+interface totalPage {
+  totalPage: Number[] | undefined
+}
+
+const Pagination:NextPage<totalPage> = ({ totalPage }) => {
   console.log('pagi');
   return (
     <div className='flex text-sm'>
