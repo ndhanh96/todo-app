@@ -17,8 +17,8 @@ function TodoForm({
   const [currentTodo, setCurrentTodo] = useState<string | null | undefined>('');
   const { data: session } = useSession();
 
-  const handleChange = (e) => {
-    setCurrentTodo(e.target.value);
+  const handleChange = (e:React.FormEvent<HTMLInputElement>) => {
+    setCurrentTodo(e.currentTarget.value);
     console.log(currentTodo);
   };
 
@@ -61,7 +61,7 @@ function TodoForm({
     handleDelete().then(data => console.log(data)).catch(error => console.log(error))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     updateTodoFunc(currentTodo)
       .then((data) => console.log(data))
