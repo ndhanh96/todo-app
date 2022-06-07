@@ -1,26 +1,73 @@
 import React from 'react';
 import { useState, useRef, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
-function TodoForm({ todo, deleteTodo, updateTodo }) {
+function TodoForm({
+  todo,
+  updateTodo,
+  userEmail,
+  postID,
+}: {
+  todo?: string | null;
+  updateTodo: any;
+  userEmail: string | null;
+  postID: number | null;
+}) {
   const [editForm, setEditForm] = useState(false);
-  const [currentTodo, setCurrentTodo] = useState(todo);
-  // const originalTodo = useRef('');
+  const [currentTodo, setCurrentTodo] = useState<string | null | undefined>('');
+  const { data: session } = useSession();
 
   const handleChange = (e) => {
     setCurrentTodo(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    updateTodo(todo, currentTodo);
-    setEditForm(!editForm);
-    console.log('submit');
+    console.log(currentTodo);
   };
 
   useEffect(() => {
     setCurrentTodo(todo)
-  }, [todo]);
+  }, [todo])
+  
 
+  const updateTodoFunc = async (value: string | null | undefined) => {
+    const data = {
+      post_id: postID,
+      content: value!,
+      email: session?.user?.email,
+      title: 'test',
+    };
+    const updateCurrentTodo = await fetch('/api/updatetodo', {
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+    return updateCurrentTodo.json();
+  };
+  const handleDelete = async () => {
+    const respond = await fetch('/api/post', {
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      method: 'DELETE',
+      body: JSON.stringify({
+        post_id: postID
+      })
+    })
+    return respond.json()
+  }
+  const deleteTodo = () => {
+    handleDelete().then(data => console.log(data)).catch(error => console.log(error))
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    updateTodoFunc(currentTodo)
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
+    console.log(currentTodo);
+  };
   return (
     <>
       <li>
@@ -28,20 +75,26 @@ function TodoForm({ todo, deleteTodo, updateTodo }) {
           <input
             disabled={!editForm}
             className='border border-yellow-400 outline-none disabled:bg-blue-300 bg-blue-500 rounded-md'
-            value={currentTodo}
+            value={currentTodo!}
             onChange={handleChange}
           />
 
           <button
-            disabled={editForm}
+            disabled={
+              session && userEmail == session.user?.email ? false : true
+            }
+            hidden={session && userEmail == session.user?.email ? false : true}
             type='button'
             className='p-1 text-md mx-1 bg-red-500 rounded-lg disabled:bg-slate-500'
-            onClick={() => deleteTodo(todo)}
+            onClick={() => deleteTodo()}
           >
             Delete
           </button>
           <button
-            disabled={editForm}
+            disabled={
+              session && userEmail == session.user?.email ? false : true
+            }
+            hidden={session && userEmail == session.user?.email ? false : true}
             type='button'
             className='p-1 text-md bg-green-600 rounded-lg disabled:bg-slate-500'
             onClick={() => setEditForm(!editForm)}
@@ -49,7 +102,10 @@ function TodoForm({ todo, deleteTodo, updateTodo }) {
             Update
           </button>
           <button
-            disabled={!editForm}
+            disabled={
+              session && userEmail == session.user?.email ? false : true
+            }
+            hidden={session && userEmail == session.user?.email ? false : true}
             className='p-1 ml-1 text-md bg-green-600 disabled:bg-slate-500 rounded-lg'
             type='submit'
           >

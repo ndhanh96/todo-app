@@ -11,8 +11,8 @@ model Post {
   post_id      Int     @id @default(autoincrement())
   content      String?
   title        String
-  author_email String?
-  User         User?   @relation(fields: [author_email], references: [email])
+  user_email String?
+  User         User?   @relation(fields: [user_email], references: [email])
 }
 
 model Profile {

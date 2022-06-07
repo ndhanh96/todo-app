@@ -1,100 +1,61 @@
-import { Post, prisma, PrismaClient } from '@prisma/client';
-import Head from 'next/head';
-import Image from 'next/image';
+import { Post } from '@prisma/client';
+import { prisma } from '../prisma/db';
 import { useState, useEffect, useRef, Key, ReactNode } from 'react';
 import TodoForm from '../components/TodoForm';
 import { GetServerSideProps, NextPage } from 'next';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import Pagination from '../components/Pagination';
+import AddTodoForm from '../components/AddTodoForm';
+import { getSession } from 'next-auth/react';
 
 interface posts {
   posts: Post[];
 }
 
-const Home: NextPage<posts> = ({ posts }) => {
-  const [todos, setTodos] = useState({ posts });
+const Home = ({ AllPosts }: { AllPosts: Post[] }) => {
+  // const [todos, setTodos] = useState({ posts });
   const [page, setPage] = useState<Number[]>();
-  const filledInput = useRef('');
-  const [inputTodo, setInputTodo] = useState('');
+  // const [posts, setPosts] = useState(AllPosts);
+  console.log('all the post',AllPosts)
+
   const getTotalPage = async () => {
     const totalPage = await fetch('/api/todototal');
     return totalPage.json();
   };
 
-  const deleteTodo = (todoToDelete) => {
-    // const getTodos = [...todos];
-    // const newTodos = getTodos.filter((todo) => todo != todoToDelete);
-    // setTodos(newTodos);
-    // console.log(newTodos);
-  };
-
-  const addTodo = (addedTodo) => {
-    // setTodos([...todos, addedTodo]);
-    // setInputTodo('');
-  };
-
-  const updateTodo = (oldTodo, updatedTodo) => {
-    // console.log(updatedTodo);
-    // const updatedTodos = todos.map((todo) => {
-    //   return todo == oldTodo ? (todo = updatedTodo) : todo;
-    // });
-    // setTodos(updatedTodos);
-  };
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    // setTodos([...todos, inputTodo]);
-    // setInputTodo('');
-  };
-
-  const onChange = (e: any) => {
-    setInputTodo(e.target.value);
-  };
-
   useEffect(() => {
     getTotalPage()
       .then((data) => {
-        const arr = [...Array(data + 1).keys()];
+        // console.log(data);
+        //primsa return 0.xx if there is less than 10 todos.
+        console.log('data', data)
+        const arr = [...Array(Math.ceil(data) + 1).keys()];
+        // arr.push(arr.length);
         arr.splice(0, 1);
+        console.log('arr', arr)
         if (page?.length != arr.length) setPage(arr);
       })
       .catch((error) => console.error(error));
-    console.log(page);
+    // console.log(page);
   }, [page]);
+
+  // useEffect(() => {
+  //   console.log(posts)
+  //   setPosts(AllPosts);
+  // }, [AllPosts]);
+  
 
   return (
     <>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <input
-          onChange={(e) => onChange(e)}
-          className='border border-yellow-500 focus:border-yellow-800 outline-none'
-          value={inputTodo}
-          placeholder=''
-        />
-        <button
-          type='submit'
-          disabled={inputTodo ? false : true}
-          className='p-2 mx-1 bg-green-600 rounded-lg disabled:bg-green-300 '
-        >
-          Add
-        </button>
-        <button
-          type='button'
-          onClick={() => setTodos([])}
-          className='p-2 bg-red-600 rounded-lg'
-        >
-          Reset
-        </button>
-      </form>
+      <AddTodoForm />
       <ul className='basis-full'>
-        {posts.map((post, index) => {
+        {AllPosts && AllPosts.map((post, index) => {
           return (
             <TodoForm
               key={index}
+              postID={post.post_id}
               todo={post.content}
-              deleteTodo={deleteTodo}
-              updateTodo={updateTodo}
+              userEmail={post.user_email}
+              updateTodo={undefined}
             />
           );
         })}
@@ -106,19 +67,16 @@ const Home: NextPage<posts> = ({ posts }) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   let page = Number(query.page);
   page > 1 && !isNaN(page) ? '' : (page = 1);
-  console.log('query', page);
+  // console.log('page query', page);
 
-  const prisma = new PrismaClient();
-  const posts = await prisma.post.findMany({
+  const AllPosts = await prisma.post.findMany({
     skip: (page - 1) * 10,
     take: 10,
   });
-  const todoTotal = await prisma.post.count();
-  const pageTotal =
-    todoTotal % 2 > 0 ? Math.floor(todoTotal / 2) + 1 : todoTotal / 10;
+  // console.log(AllPosts)
 
   return {
-    props: { posts },
+    props: { AllPosts },
   };
 };
 
