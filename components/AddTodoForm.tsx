@@ -5,7 +5,7 @@ const AddTodoForm = () => {
   const [inputTodo, setInputTodo] = useState('');
   const { data: session } = useSession();
 
-  const sendTodo = async () => {
+  const addTodo = async () => {
     const todo = await fetch('/api/post', {
       method: 'POST',
       body: inputTodo,
@@ -13,34 +13,15 @@ const AddTodoForm = () => {
     return todo.json();
   };
 
-  const deleteTodo = (todoToDelete) => {
-    // const getTodos = [...todos];
-    // const newTodos = getTodos.filter((todo) => todo != todoToDelete);
-    // setTodos(newTodos);
-    // console.log(newTodos);
-  };
-
-  const addTodo = (addedTodo) => {
-    // setTodos([...todos, addedTodo]);
-    // setInputTodo('');
-  };
-
-  const updateTodo = (oldTodo, updatedTodo) => {
-    // console.log(updatedTodo);
-    // const updatedTodos = todos.map((todo) => {
-    //   return todo == oldTodo ? (todo = updatedTodo) : todo;
-    // });
-    // setTodos(updatedTodos);
-  };
-
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!session) {
       signIn();
     }
-    sendTodo().then((data) => console.log(data)).catch(error => console.log(error));
-    // setTodos([...todos, inputTodo]);
-    // setInputTodo('');
+    setInputTodo('')
+    addTodo()
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
   };
 
   const onChange = (e: any) => {
@@ -48,7 +29,7 @@ const AddTodoForm = () => {
   };
   return (
     <>
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <form onSubmit={handleSubmit}>
         <input
           onChange={(e) => onChange(e)}
           className='border border-yellow-500 focus:border-yellow-800 outline-none'

@@ -6,7 +6,6 @@ interface totalPage {
 }
 
 const Pagination = ({ totalPage }:totalPage) => {
-  console.log('pagi',totalPage);
   return (
     <div className='flex text-sm'>
       {totalPage &&
