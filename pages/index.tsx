@@ -46,7 +46,6 @@ const Home = ({ AllPosts }: { AllPosts: Post[] }) => {
                 postID={post.post_id}
                 todo={post.content}
                 userEmail={post.user_email}
-                updateTodo={undefined}
               />
             );
           })}

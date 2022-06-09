@@ -2,16 +2,14 @@ import React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useMutation } from 'react-query';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 function TodoForm({
   todo,
-  updateTodo,
   userEmail,
-  postID
+  postID,
 }: {
   todo?: string | null;
-  updateTodo: any;
   userEmail: string | null;
   postID: number | null;
 }) {
@@ -19,7 +17,7 @@ function TodoForm({
   const [currentTodo, setCurrentTodo] = useState<string | null | undefined>('');
   const { data: session } = useSession();
   const router = useRouter();
-  console.log('check router', router.asPath)
+  console.log('check router', router.asPath);
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     setCurrentTodo(e.currentTarget.value);
@@ -30,63 +28,73 @@ function TodoForm({
     setCurrentTodo(todo);
   }, [todo]);
 
-  const updateTodoFunc = async (value: string | null | undefined) => {
-    const data = {
-      post_id: postID,
-      content: value!,
-      email: session?.user?.email,
-      title: 'test',
-    };
-    const updateCurrentTodo = await fetch('/api/updatetodo', {
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-    return updateCurrentTodo.json();
-  };
-
-  const deleteTodo = useMutation(async () => {
-    const respone = await fetch('/api/post', {
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'DELETE',
-      body: JSON.stringify({
+  const updateTodo = useMutation(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const data = {
         post_id: postID,
-      }),
-    });
-    if (!respone.ok) throw new Error('Network is error');
-    return respone.json();
-  }, {
-    onSuccess: () => router.push(`/${router.asPath}`)
-  });
+        content: currentTodo,
+        email: session?.user?.email,
+        title: 'test',
+      };
+      const respone = await fetch('/api/updatetodo', {
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+      if (!respone.ok) throw new Error('update error');
+      return respone.json();
+    },
+    {
+      onSuccess: () => {
+        setEditForm(!editForm);
+        router.push(`/${router.asPath}`);
+      },
+    }
+  );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    updateTodoFunc(currentTodo)
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-    console.log(currentTodo);
-  };
+  const deleteTodo = useMutation(
+    async () => {
+      const respone = await fetch('/api/post', {
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: 'DELETE',
+        body: JSON.stringify({
+          post_id: postID,
+        }),
+      });
+      if (!respone.ok) throw new Error('Network is error');
+      return respone.json();
+    },
+    {
+      onSuccess: () => router.push(`/${router.asPath}`),
+    }
+  );
+
   return (
     <>
-      {deleteTodo.isLoading ? (
+      {deleteTodo.isLoading || updateTodo.isLoading ? (
         <div className='flex w-full justify-center'>
-          <p className='text-cyan-600'>Deleting Todo</p>
+          <p className='text-cyan-600'>
+            {deleteTodo.isLoading ? 'Deleting Todo' : 'Updating Todo'}
+          </p>
         </div>
-        
       ) : (
         <>
-          {deleteTodo.isError ? (
+          {deleteTodo.isError || updateTodo.isError ? (
             <div>{`error ${deleteTodo.error}`}</div>
           ) : null}
-          {deleteTodo.isSuccess ? <></> : null}
+          {deleteTodo.isSuccess || updateTodo.isSuccess ? <></> : null}
           <li>
-            <form className='flex justify-center my-1 ' onSubmit={handleSubmit}>
+            <form
+              className='flex justify-center my-1 '
+              onSubmit={(e) => updateTodo.mutate(e)}
+            >
               <input
                 disabled={!editForm}
                 className='border border-yellow-400 outline-none disabled:bg-blue-300 bg-blue-500 rounded-md'

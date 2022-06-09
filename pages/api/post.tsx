@@ -12,7 +12,7 @@ export default async function handler(
 ) {
   const session = await getSession({ req });
   const { method } = req;
-
+  
   
   if (method == 'POST') {
     if (session) {
