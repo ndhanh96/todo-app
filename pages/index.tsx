@@ -50,7 +50,7 @@ const Home = ({ AllPosts }: { AllPosts: Post[] }) => {
             );
           })}
       </ul>
-      <Pagination totalPage={page} />
+      <Pagination />
     </>
   );
 };

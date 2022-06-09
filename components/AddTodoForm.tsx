@@ -16,16 +16,6 @@ const AddTodoForm = () => {
     return todo.json();
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (session) {
-      setInputTodo('');
-      addTodoQ()
-        .then((data) => console.log(data))
-        .catch((error) => console.log(error));
-    }
-  };
-
   const addTodo = useMutation(
     async (e: React.FormEvent<HTMLFormElement>) => {
       setInputTodo('')
