@@ -12,9 +12,7 @@ interface posts {
 }
 
 const Home = ({ AllPosts }: { AllPosts: Post[] }) => {
-  // const [todos, setTodos] = useState({ posts });
   const [page, setPage] = useState<Number[]>();
-  // const [posts, setPosts] = useState(AllPosts);
   console.log('all the post', AllPosts);
 
   const getTotalPage = async () => {

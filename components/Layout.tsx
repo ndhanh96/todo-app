@@ -5,7 +5,7 @@ function Layout({ children } : {children: React.ReactNode}) {
   return (
     <div
       id='layout'
-      className='flex m-2 sm:mx-12 lg:mx-20 2xl:mx-52 2xl:my-10 py-2 rounded-md flex-wrap justify-center md:text-2xl 2xl:text-4xl bg-yellow-300 '
+      className='flex m-2 sm:mx-12 lg:mx-20 2xl:mx-52 2xl:my-10 py-2 rounded-md flex-wrap justify-center md:text-2xl 2xl:text-4xl bg-yellow-300 border-2 border-blue-700'
     >
       <Head>
         <title>Todo things ....</title>

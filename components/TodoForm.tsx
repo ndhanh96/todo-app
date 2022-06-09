@@ -1,14 +1,14 @@
 import React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import { useRouter } from 'next/router'
 
 function TodoForm({
   todo,
   updateTodo,
   userEmail,
-  postID,
+  postID
 }: {
   todo?: string | null;
   updateTodo: any;
@@ -18,8 +18,9 @@ function TodoForm({
   const [editForm, setEditForm] = useState(false);
   const [currentTodo, setCurrentTodo] = useState<string | null | undefined>('');
   const { data: session } = useSession();
-  const queryClient = useQueryClient();
-  const router = useRouter()
+  const router = useRouter();
+  console.log('check router', router.asPath)
+
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     setCurrentTodo(e.currentTarget.value);
     console.log(currentTodo);
@@ -47,25 +48,7 @@ function TodoForm({
     return updateCurrentTodo.json();
   };
 
-  const handleDelete = async () => {
-    const respond = await fetch('/api/post', {
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'DELETE',
-      body: JSON.stringify({
-        post_id: postID,
-      }),
-    });
-    return respond.json();
-  };
-  const deleteTodo = () => {
-    handleDelete()
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-  };
-  const deleteTodoQuery = useMutation(async () => {
+  const deleteTodo = useMutation(async () => {
     const respone = await fetch('/api/post', {
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +62,7 @@ function TodoForm({
     if (!respone.ok) throw new Error('Network is error');
     return respone.json();
   }, {
-    onSuccess: () => router.push('/')
+    onSuccess: () => router.push(`/${router.asPath}`)
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -91,17 +74,17 @@ function TodoForm({
   };
   return (
     <>
-      {deleteTodoQuery.isLoading ? (
+      {deleteTodo.isLoading ? (
         <div className='flex w-full justify-center'>
           <p className='text-cyan-600'>Deleting Todo</p>
         </div>
         
       ) : (
         <>
-          {deleteTodoQuery.isError ? (
-            <div>{`error ${deleteTodoQuery.error}`}</div>
+          {deleteTodo.isError ? (
+            <div>{`error ${deleteTodo.error}`}</div>
           ) : null}
-          {deleteTodoQuery.isSuccess ? <></> : null}
+          {deleteTodo.isSuccess ? <></> : null}
           <li>
             <form className='flex justify-center my-1 ' onSubmit={handleSubmit}>
               <input
@@ -121,7 +104,7 @@ function TodoForm({
                 type='button'
                 className='p-1 text-md mx-1 bg-red-500 rounded-lg disabled:bg-slate-500'
                 onClick={() => {
-                  deleteTodoQuery.mutate();
+                  deleteTodo.mutate();
                 }}
               >
                 Delete
