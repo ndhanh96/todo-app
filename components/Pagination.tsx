@@ -31,7 +31,7 @@ const Pagination = () => {
   return (
     <div className='flex text-sm'>
       {page && page.map((p, i) => (
-        <Link key={i} href={`/?page=${p}`}>
+        <Link key={i} passHref href={`/?page=${p}`}>
           <button className='py-1 px-2 mx-1 bg-zinc-300 rounded'>
             {`${p}`}
           </button>
