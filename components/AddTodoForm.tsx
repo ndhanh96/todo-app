@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 const AddTodoForm = () => {
   const [inputTodo, setInputTodo] = useState('');
   const { data: session } = useSession();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const addTodo = useMutation(
@@ -22,13 +22,13 @@ const AddTodoForm = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('allpage');
         router.push('/');
+        queryClient.invalidateQueries('allpage');
       },
     }
   );
 
-  const onChange = (e: any) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputTodo(e.target.value);
   };
   return (

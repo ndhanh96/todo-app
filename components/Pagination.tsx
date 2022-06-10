@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 
 interface totalPage {
   isLoading: boolean;
@@ -10,16 +10,12 @@ interface totalPage {
 }
 
 const Pagination = () => {
-  const queryClient = useQueryClient();
   const [page, setPage] = useState<Number[] | null>();
   const { isLoading, error, data } = useQuery('allpage', async () => {
     const respone = await fetch('/api/todototal');
     if (!respone.ok) throw new Error('error while fetching all page');
     return respone.json();
   });
-  // useEffect(() => {
-  //   queryClient.invalidateQueries('allpage');
-  // }, []);
 
   if (isLoading) return <div>Loading.....</div>;
   if (error) return <div>{"can't get page"}</div>;

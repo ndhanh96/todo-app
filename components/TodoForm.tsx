@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
@@ -105,47 +105,34 @@ function TodoForm({
                 value={currentTodo!}
                 onChange={handleChange}
               />
-
-              <button
-                disabled={
-                  session && userEmail == session.user?.email ? false : true
-                }
-                hidden={
-                  session && userEmail == session.user?.email ? false : true
-                }
-                type='button'
-                className='p-1 text-md mx-1 bg-red-500 rounded-lg disabled:bg-slate-500'
-                onClick={() => {
-                  deleteTodo.mutate();
-                }}
-              >
-                Delete
-              </button>
-              <button
-                disabled={
-                  session && userEmail == session.user?.email ? false : true
-                }
-                hidden={
-                  session && userEmail == session.user?.email ? false : true
-                }
-                type='button'
-                className='p-1 text-md bg-green-600 rounded-lg disabled:bg-slate-500'
-                onClick={() => setEditForm(!editForm)}
-              >
-                Update
-              </button>
-              <button
-                disabled={
-                  session && userEmail == session.user?.email ? false : true
-                }
-                hidden={
-                  session && userEmail == session.user?.email ? false : true
-                }
-                className='p-1 ml-1 text-md bg-green-600 disabled:bg-slate-500 rounded-lg'
-                type='submit'
-              >
-                Save
-              </button>
+              {session && userEmail == session.user?.email ? (
+                <>
+                  <button
+                    type='button'
+                    className='p-1 text-md mx-1 bg-red-500 rounded-lg disabled:bg-slate-500'
+                    onClick={() => {
+                      deleteTodo.mutate();
+                    }}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type='button'
+                    className='p-1 text-md bg-green-600 rounded-lg disabled:bg-slate-500'
+                    onClick={() => setEditForm(!editForm)}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className='p-1 ml-1 text-md bg-green-600 disabled:bg-slate-500 rounded-lg'
+                    type='submit'
+                  >
+                    Save
+                  </button>
+                </>
+              ) : (
+                <></>
+              )}
             </form>
           </li>
         </>
