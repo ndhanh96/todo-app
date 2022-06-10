@@ -1,5 +1,5 @@
 ## LIVE DEMO AT 
-[https://todo-app-pe1pbhov1-ndhanh96.vercel.app](https://todo-app-pe1pbhov1-ndhanh96.vercel.app)
+[https://todo-app-one-self.vercel.app/](https://todo-app-one-self.vercel.app/)
 
 ## LIVE DEMO AT
 
