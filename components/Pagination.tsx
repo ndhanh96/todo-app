@@ -20,7 +20,7 @@ const Pagination = () => {
     }
   );
   if (isLoading) return <div>Loading.....</div>;
-  if (error) return <div>can't get page</div>;
+  if (error) return <div>{'can\'t get page'}</div>;
   if (data) {
     const arr = [...Array(Math.ceil(data) + 1).keys()];
     arr.splice(0, 1);
