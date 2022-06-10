@@ -1,24 +1,17 @@
 import React, { useState } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
 
 const AddTodoForm = () => {
   const [inputTodo, setInputTodo] = useState('');
   const { data: session } = useSession();
+  const queryClient = useQueryClient()
   const router = useRouter();
-
-  const addTodoQ = async () => {
-    const todo = await fetch('/api/post', {
-      method: 'POST',
-      body: inputTodo,
-    });
-    return todo.json();
-  };
 
   const addTodo = useMutation(
     async (e: React.FormEvent<HTMLFormElement>) => {
-      setInputTodo('')
+      setInputTodo('');
       e.preventDefault();
       const respone = await fetch('/api/post', {
         method: 'POST',
@@ -28,7 +21,10 @@ const AddTodoForm = () => {
       return respone.json();
     },
     {
-      onSuccess: () => router.push('/'),
+      onSuccess: () => {
+        queryClient.invalidateQueries('allpage');
+        router.push('/');
+      },
     }
   );
 
@@ -41,7 +37,9 @@ const AddTodoForm = () => {
         <div>Adding Todo, please wait</div>
       ) : (
         <>
-          {addTodo.isError ? <div>{`Something wrong when adding : ${addTodo.error}`}</div> : null}
+          {addTodo.isError ? (
+            <div>{`Something wrong when adding : ${addTodo.error}`}</div>
+          ) : null}
           {addTodo.isSuccess ? <></> : null}
           <form onSubmit={(e) => addTodo.mutate(e)}>
             <input

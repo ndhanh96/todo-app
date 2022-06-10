@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
 
 function TodoForm({
@@ -17,7 +17,7 @@ function TodoForm({
   const [currentTodo, setCurrentTodo] = useState<string | null | undefined>('');
   const { data: session } = useSession();
   const router = useRouter();
-  console.log('check router', router.asPath);
+  const queryClient = useQueryClient();
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     setCurrentTodo(e.currentTarget.value);
@@ -50,6 +50,7 @@ function TodoForm({
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries('allpage');
         setEditForm(!editForm);
         router.push(`/${router.asPath}`);
       },
@@ -72,7 +73,10 @@ function TodoForm({
       return respone.json();
     },
     {
-      onSuccess: () => router.push(`/${router.asPath}`),
+      onSuccess: () => {
+        queryClient.invalidateQueries('allpage');
+        router.push(`/${router.asPath}`);
+      },
     }
   );
 
