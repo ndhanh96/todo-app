@@ -57,4 +57,7 @@ export default NextAuth({
     }),
     // ...add more providers here
   ],
+  pages: {
+    signIn: '/signin'
+  }
 });
