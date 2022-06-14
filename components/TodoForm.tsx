@@ -19,9 +19,16 @@ function TodoForm({
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
-    setCurrentTodo(e.currentTarget.value);
+  const handleChange = (e: any) => {
+    setCurrentTodo(e.target.value);
     console.log(currentTodo);
+  };
+  const preventLineBreak = (e: any) => {
+    if (e.keyCode == 13 && !e.shiftKey) { //when user press enter
+      // prevent line break
+      e.preventDefault();
+      updateTodo.mutate(e)
+    }
   };
 
   useEffect(() => {
@@ -30,7 +37,7 @@ function TodoForm({
 
   const updateTodo = useMutation(
     async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+      e?.preventDefault();
       const data = {
         post_id: postID,
         content: currentTodo,
@@ -99,11 +106,14 @@ function TodoForm({
               className='flex justify-center my-1 '
               onSubmit={(e) => updateTodo.mutate(e)}
             >
-              <input
-                disabled={!editForm}
-                className='border border-yellow-400 outline-none disabled:bg-blue-300 bg-blue-500 rounded-md'
-                value={currentTodo!}
+              <textarea
+                onKeyDown={preventLineBreak}
                 onChange={handleChange}
+                rows={1}
+                disabled={!editForm}
+                wrap='off'
+                value={currentTodo!}
+                className=' h-14 overflow-x-auto border border-yellow-400 outline-none disabled:bg-blue-300 bg-blue-500 rounded-md resize-none'
               />
               {session && userEmail == session.user?.email ? (
                 <>

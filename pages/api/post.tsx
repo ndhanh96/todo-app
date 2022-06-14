@@ -1,6 +1,6 @@
 import { prisma } from '../../prisma/db';
 import { getSession } from 'next-auth/react';
-import * as agron2 from 'argon2';
+import * as argon2 from 'argon2';
 import {
   NextApiRequest,
   NextApiResponse,
@@ -22,11 +22,13 @@ export default async function handler(
         },
       });
       if (checkEmailInDB == null) {
+        //login with provider liek google or facebook... will 
+        // create an account in DB if email is not in DB.
         const addAccount = await prisma.user.create({
           data: {
             email: session.user!.email!,
             name: 'test',
-            password: await agron2.hash('asdasfasfa'),
+            password: await argon2.hash('asdasfasfa'),
           },
         });
       }
@@ -44,7 +46,7 @@ export default async function handler(
   }
   if (method == 'DELETE') {
     if (session) {
-      const ifUserHasTodo = prisma.post.findFirst({
+      const ifUserHasTodo = await prisma.post.findFirst({
         where: {
           post_id: req.body.post_id,
           user_email: session?.user?.email,

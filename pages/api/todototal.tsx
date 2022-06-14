@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "../../node_modules/next/dist/shared/lib/utils";
 import {prisma} from '../../prisma/db'
 
