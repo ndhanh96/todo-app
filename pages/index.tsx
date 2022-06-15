@@ -7,9 +7,9 @@ import AddTodoForm from '../components/AddTodoForm';
 
 const Home = ({ AllPosts }: { AllPosts: Post[] }) => {
   return (
-    <>
+    <div className='w-10/12 flex flex-col gap-4'>
       <AddTodoForm />
-      <ul className='basis-full'>
+      <ul className=''>
         {AllPosts &&
           AllPosts.map((post, index) => {
             return (
@@ -23,7 +23,7 @@ const Home = ({ AllPosts }: { AllPosts: Post[] }) => {
           })}
       </ul>
       <Pagination />
-    </>
+    </div>
   );
 };
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {

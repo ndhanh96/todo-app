@@ -24,10 +24,11 @@ function TodoForm({
     console.log(currentTodo);
   };
   const preventLineBreak = (e: any) => {
-    if (e.keyCode == 13 && !e.shiftKey) { //when user press enter
+    if (e.keyCode == 13 && !e.shiftKey) {
+      //when user press enter
       // prevent line break
       e.preventDefault();
-      updateTodo.mutate(e)
+      updateTodo.mutate(e);
     }
   };
 
@@ -103,7 +104,7 @@ function TodoForm({
           {deleteTodo.isSuccess || updateTodo.isSuccess ? <></> : null}
           <li>
             <form
-              className='flex justify-center my-1 '
+              className='flex justify-center my-2 w-full'
               onSubmit={(e) => updateTodo.mutate(e)}
             >
               <textarea
@@ -113,13 +114,15 @@ function TodoForm({
                 disabled={!editForm}
                 wrap='off'
                 value={currentTodo!}
-                className=' h-14 overflow-x-auto border border-yellow-400 outline-none disabled:bg-blue-300 bg-blue-500 rounded-md resize-none'
+                className='basis-full p-1 h-12 overflow-x-auto 
+                outline-none disabled:bg-amber-500 bg-blue-300 rounded-md resize-none
+                shadow-lg shadow-amber-800/50 text-slate-50'
               />
               {session && userEmail == session.user?.email ? (
                 <>
                   <button
                     type='button'
-                    className='p-1 text-md mx-1 bg-red-500 rounded-lg disabled:bg-slate-500'
+                    className='p-1 mx-1 text-white bg-red-500 rounded-lg disabled:bg-slate-500 shadow-lg shadow-red-600/60'
                     onClick={() => {
                       deleteTodo.mutate();
                     }}
@@ -128,13 +131,13 @@ function TodoForm({
                   </button>
                   <button
                     type='button'
-                    className='p-1 text-md bg-green-600 rounded-lg disabled:bg-slate-500'
+                    className='p-1 text-white bg-green-600 rounded-lg disabled:bg-slate-500 shadow-lg shadow-green-600/60'
                     onClick={() => setEditForm(!editForm)}
                   >
                     Update
                   </button>
                   <button
-                    className='p-1 ml-1 text-md bg-green-600 disabled:bg-slate-500 rounded-lg'
+                    className='p-1 ml-1 text-white bg-green-600 disabled:bg-slate-500 rounded-lg shadow-lg shadow-green-600/60'
                     type='submit'
                   >
                     Save

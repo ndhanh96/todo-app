@@ -41,10 +41,10 @@ const AddTodoForm = () => {
             <div>{`Something wrong when adding : ${addTodo.error}`}</div>
           ) : null}
           {addTodo.isSuccess ? <></> : null}
-          <form onSubmit={(e) => addTodo.mutate(e)}>
+          <form className='flex justify-between w-full h-auto text-white' onSubmit={(e) => addTodo.mutate(e)}>
             <input
               onChange={(e) => onChange(e)}
-              className='border border-yellow-500 focus:border-yellow-800 outline-none'
+              className='w-3/4 grow border-2 rounded-md border-yellow-500 text-zinc-900 focus:border-yellow-800 outline-none'
               value={inputTodo}
               placeholder=''
             />
@@ -52,7 +52,7 @@ const AddTodoForm = () => {
               type='submit'
               disabled={session?.user ? false : true}
               hidden={session?.user ? false : true}
-              className='p-2 mx-1 bg-green-600 rounded-lg disabled:bg-green-300 '
+              className='basis-auto p-2 mx-1 bg-green-600 rounded-lg disabled:bg-green-300 shadow-md shadow-green-600/70'
             >
               Add
             </button>
@@ -68,11 +68,11 @@ const AddTodoForm = () => {
             <button
               type='button'
               onClick={() => signOut()}
-              className='p-2 bg-red-600 rounded-lg'
+              className='  p-2 bg-red-600 rounded-lg shadow-md shadow-red-600/70'
               disabled={session?.user ? false : true}
               hidden={session?.user ? false : true}
             >
-              SignOut
+              Sign Out
             </button>
           </form>
         </>
