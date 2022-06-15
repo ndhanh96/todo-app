@@ -60,7 +60,7 @@ const AddTodoForm = () => {
               type='button'
               disabled={session?.user ? true : false}
               hidden={session?.user ? true : false}
-              className='p-2 mx-1 bg-blue-600 rounded-lg disabled:bg-green-300'
+              className='p-2 mx-1 bg-blue-600 rounded-lg shadow-lg shadow-blue-600/40'
               onClick={() => signIn()}
             >
               Sign In
